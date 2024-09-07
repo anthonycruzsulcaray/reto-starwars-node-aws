@@ -1,0 +1,39 @@
+service: reto-starwars-api
+
+frameworkVersion: '3'
+
+plugins:
+ - serverless-plugin-typescript
+ - serverless-plugin-log-retention
+ - serverless-offline
+ - serverless-webpack
+
+ 
+provider:
+  name: aws
+  lambdaHashingVersion: '20201221'
+  runtime: nodejs18.x
+  region: us-west-1
+  stage: dev
+  memorySize: 250
+
+functions:
+  api:
+    handler: src/serverlessDeploy/http/lambda.handler
+    events:
+      - http:
+          path: swagger
+          method: get
+      - http:
+          path: {proxy+}
+          method: any
+
+package:
+  individually: true
+
+custom:
+  logRetentionInDays: 7  
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: true
+
